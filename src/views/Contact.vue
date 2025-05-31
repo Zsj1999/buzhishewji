@@ -38,7 +38,7 @@
               <i class="el-icon-location"></i>
               <div>
                 <h4>地址</h4>
-                <p>北京市朝阳区某某大厦A座1001室</p>
+                <p>安国市祁州大路376号不止设计工作室</p>
               </div>
             </div>
             <div class="info-item">
