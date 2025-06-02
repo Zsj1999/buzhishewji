@@ -1,0 +1,102 @@
+{
+    "works": [
+      {
+        "title": "现代简约风格客厅",
+        "description": "以简约线条和自然色调打造舒适空间",
+        "image": "https://via.placeholder.com/400x300/545c64/ffffff?text=现代简约",
+        "videoSrc": "../assets/mp4/shijing1/1.mp4"
+      },
+      {
+        "title": "北欧风格卧室",
+        "description": "清新淡雅的北欧风格，营造温馨氛围",
+        "image": "https://via.placeholder.com/400x300/545c64/ffffff?text=北欧风格",
+        "videoSrc": "../assets/mp4/shijing1/2.mp4"
+      },
+      {
+        "title": "工业风餐厅",
+        "description": "粗犷与精致的完美结合",
+        "image": "https://via.placeholder.com/400x300/545c64/ffffff?text=工业风格",
+        "videoSrc": "../assets/mp4/shijing1/3.mp4"
+      },
+      {
+        "title": "极简风格客厅",
+        "description": "以简约线条和自然色调打造舒适空间",
+        "image": "https://via.placeholder.com/400x300/545c64/ffffff?text=极简风格",
+        "videoSrc": "../assets/mp4/shijing1/4.mp4"
+      },
+      {
+        "title": "轻奢风格客厅1",
+        "description": "精致与奢华的完美诠释",
+        "image": "https://via.placeholder.com/400x300/545c64/ffffff?text=轻奢风格",
+        "videoSrc": "../assets/mp4/shijing1/5.mp4"
+      },
+      {
+        "title": "轻奢风格客厅2",
+        "description": "'低调的奢华'——以精致材质与金属元素打造高品质生活空间",
+        "image": "https://via.placeholder.com/400x300/545c64/ffffff?text=日式风格",
+        "videoSrc": "../assets/mp4/shijing1/8.mp4"
+      },
+      {
+        "title": "意式轻奢风格客厅",
+        "description": "以奢华石材和金属线条打造舒适空间",
+        "image": "https://via.placeholder.com/400x300/545c64/ffffff?text=意式轻奢风格",
+        "videoSrc": "../assets/mp4/shijing1/6.mp4"
+      },
+      {
+        "title": "新现代实用型客厅",
+        "description": "融合现代美学与实用功能,打造简约而不简单的生活空间",
+        "image": "https://via.placeholder.com/400x300/545c64/ffffff?text=新现代实用型客厅",
+        "videoSrc": "../assets/mp4/shijing1/7.mp4"
+      },
+      
+      {
+        "title": "意大利风格客厅",
+        "description": "豪华的意大利风格，打造奢华生活空间",
+        "image": "https://via.placeholder.com/400x300/545c64/ffffff?text=意大利风格",
+        "videoSrc": "../assets/mp4/shijing1/9.mp4"
+      },
+      {
+        "title": "新中式风格客厅",
+        "description": "'东韵西形'——将传统东方美学与现代居住需求完美融合",
+        "image": "https://via.placeholder.com/400x300/545c64/ffffff?text=日式风格",
+        "videoSrc": "../assets/mp4/shijing1/10.mp4"
+      },
+      {
+        "title": "现代极简",
+        "description": "简净留白，功能至上，去繁就简，舒朗通透",
+        "image": "https://via.placeholder.com/400x300/545c64/ffffff?text=新现代实用型客厅",
+        "videoSrc": "../assets/mp4/shijing1/11.mp4"
+      },
+      {
+        "title": "现代简约",
+        "description": "融合现代美学与实用功能,打造简约而不简单的生活空间",
+        "image": "https://via.placeholder.com/400x300/545c64/ffffff?text=新现代实用型客厅",
+        "videoSrc": "../assets/mp4/shijing1/12.mp4"
+      },
+      {
+        "title": "中式复古",
+        "description": "融合现代美学与实用功能,打造简约而不简单的生活空间",
+        "image": "https://via.placeholder.com/400x300/545c64/ffffff?text=新现代实用型客厅",
+        "videoSrc": "../assets/mp4/shijing1/13.mp4"
+      },
+      {
+        "title": "轻奢",
+        "description": "质感在呼吸，奢雅自流淌",
+        "image": "https://via.placeholder.com/400x300/545c64/ffffff?text=新现代实用型客厅",
+        "videoSrc": "../assets/mp4/shijing1/14.mp4"
+      },
+      {
+        "title": "现代简约",
+        "description": "以简笔线条、纯粹色调与实用功能,筑就极简舒适美学。",
+        "image": "https://via.placeholder.com/400x300/545c64/ffffff?text=新现代实用型客厅",
+        "videoSrc": "../assets/mp4/shijing1/15.mp4"
+      },
+      {
+        "title": "轻奢",
+        "description": "简约基底 + 质感元素，勾勒轻奢美学。",
+        "image": "https://via.placeholder.com/400x300/545c64/ffffff?text=新现代实用型客厅",
+        "videoSrc": "../assets/mp4/shijing1/16.mp4"
+      }
+
+    ]
+  }
