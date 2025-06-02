@@ -6,26 +6,53 @@
     </div>
     <div class="works-grid">
       <el-row :gutter="20">
-        <el-col :xs="24" :sm="12" :md="8" v-for="(work, index) in jsonData" :key="index">
-          <el-card class="work-card" :body-style="{ padding: '0px' }" @click.native="handleCardClick(work)">
-            <div class="video-container" @mouseenter="showControls[index] = true"
-              @mouseleave="showControls[index] = false">
-              <video :src="getVideoPath(work.videoSrc)" class="work-image" ref="videoPlayer" @play="onPlay(index)"
-                @pause="onPause(index)" @timeupdate="updateProgress(index)"
-                @loadedmetadata="setDuration(index)"></video>
-              <div class="custom-controls" @click.stop>
+        <el-col 
+          :xs="24" 
+          :sm="12" 
+          :md="8" 
+          v-for="(work, index) in jsonData" 
+          :key="index"
+        >
+          <el-card 
+            class="work-card" 
+            :body-style="{ padding: '0px' }"
+          >
+            <div 
+              class="video-container"
+              @mouseenter="videoStates[index].showControls = true"
+              @mouseleave="videoStates[index].showControls = isPlaying[index] ? false : true"
+            >
+              <video 
+                :src="getVideoPath(work.videoSrc)" 
+                class="work-image" 
+                ref="videoPlayer"
+                @play="onPlay(index)"
+                @pause="onPause(index)"
+                @timeupdate="updateProgress(index)"
+                @loadedmetadata="setDuration(index)"
+              ></video>
+              
+              <div 
+                class="custom-controls" 
+                
+                @click.stop
+              >
                 <button @click="togglePlay(index)">
-                  <i :class="isPlaying[index] ? 'el-icon-video-pause' : 'el-icon-video-play'"></i>
+                  <i :class="videoStates[index].isPlaying ? 'el-icon-video-pause' : 'el-icon-video-play'"></i>
                 </button>
-
+                
                 <div class="progress-bar" @click="seek($event, index)">
-                  <div class="progress" :style="{ width: progress[index] + '%' }"></div>
+                  <div class="progress" :style="{ width: videoStates[index].progress + '%' }"></div>
                 </div>
-                <span class="time">{{ formatTime(currentTime[index]) }} / {{ formatTime(duration[index]) }}</span>
+                
+                <span class="time">
+                  {{ formatTime(videoStates[index].currentTime) }} / {{ formatTime(videoStates[index].duration) }}
+                </span>
+                
                 <button @click="toggleMute(index)">
-                  <i :class="isMuted[index] ? 'el-icon-close-notification' : 'el-icon-bell'"></i>
+                  <i :class="videoStates[index].isMuted ? 'el-icon-close-notification' : 'el-icon-bell'"></i>
                 </button>
-
+                
                 <button @click="toggleFullscreen(index)">
                   <i class="el-icon-full-screen"></i>
                 </button>
@@ -51,200 +78,129 @@ export default {
   data() {
     return {
       jsonData: jsonData.works,
-      isPlaying: [],
-      isMuted: [],
-      progress: [],
-      currentTime: [],
-      duration: [],
-      showControls: [],
-      activeVideoIndex: -1,
+      videoStates: [],
+      activeVideoIndex: -1
     }
   },
   created() {
-    // 初始化状态数组
-    this.jsonData.forEach(() => {
-      this.isPlaying.push(false)
-      this.isMuted.push(false)
-      this.progress.push(0)
-      this.currentTime.push(0)
-      this.duration.push(0)
-      this.showControls.push(false)
-    })
+    // 初始化视频状态
+    this.videoStates = this.jsonData.map(() => ({
+      isPlaying: false,
+      isMuted: false,
+      showControls: true,
+      progress: 0,
+      currentTime: 0,
+      duration: 0
+    }))
   },
   methods: {
     handleCardClick(work) {
       console.log('点击作品:', work.title)
     },
+    
     getVideoPath(path) {
       if (!path) return ''
       try {
-        return require(`@/assets/${path.replace('../assets/', '')}`)
+        const relativePath = path.replace('../assets/', '')
+        return require(`@/assets/${relativePath}`)
       } catch (e) {
         console.error('加载视频失败:', e)
         return ''
       }
     },
-
-    mounted() {
-      // 初始化数组（根据视频数量）
-      this.initVideoStates(this.videos.length); // 假设videos是你的视频列表
-    },
-    methods: {
-      initVideoStates(count) {
-        for (let i = 0; i < count; i++) {
-          this.$set(this.isPlaying, i, false);
-          this.$set(this.showControls, i, true);
-        }
-      },
-      togglePlay(index) {
-        const video = this.$refs.videoPlayer[index];
-        if (!video) return;
-        try {
-          // 暂停其他视频
-          if (this.activeVideoIndex !== -1 && this.activeVideoIndex !== index) {
-            const prevVideo = this.$refs.videoPlayer[this.activeVideoIndex];
-            if (prevVideo && !prevVideo.paused) {
-              prevVideo.pause();
-              this.$set(this.isPlaying, this.activeVideoIndex, false);
-              this.$set(this.showControls, this.activeVideoIndex, true);
-            }
-          }
-
-          if (video.paused) {
-            const onPlay = () => {
-              this.$set(this.isPlaying, index, true);
-              this.$set(this.showControls, index, false);
-              this.activeVideoIndex = index;
-              video.removeEventListener('play', onPlay);
-            };
-
-            video.addEventListener('play', onPlay);
-            video.play().catch(err => {
-              console.error('播放失败:', err);
-              this.handlePlayError(index);
-            });
-          } else {
-            const onPause = () => {
-              this.$set(this.isPlaying, index, false);
-              this.$set(this.showControls, index, true);
-              this.activeVideoIndex = -1;
-              video.removeEventListener('pause', onPause);
-            };
-
-            video.addEventListener('pause', onPause);
-            video.pause();
-          }
-        } catch (error) {
-          console.error('播放控制失败:', error);
-          this.handlePlayError(index);
-        }
-      },
-      handlePlayError(index) {
-        this.$set(this.isPlaying, index, false);
-        this.$set(this.showControls, index, true);
-        this.activeVideoIndex = -1;
-      }
-    },
-    togglePlay(index) {
-      const video = this.$refs.videoPlayer[index]
-      if (!video) return
+    
+    async togglePlay(index) {
       try {
-        // 如果有其他视频正在播放，先暂停它
+        const video = this.$refs.videoPlayer[index]
+        if (!video) return
+        
+        // 暂停其他正在播放的视频
         if (this.activeVideoIndex !== -1 && this.activeVideoIndex !== index) {
           const prevVideo = this.$refs.videoPlayer[this.activeVideoIndex]
           if (prevVideo && !prevVideo.paused) {
             prevVideo.pause()
-            this.$set(this.isPlaying, this.activeVideoIndex, false)
-            this.$set(this.showControls, this.activeVideoIndex, true)
+            this.$set(this.videoStates[this.activeVideoIndex], 'isPlaying', false)
+            this.$set(this.videoStates[this.activeVideoIndex], 'showControls', true)
           }
         }
 
-        // 处理当前视频播放/暂停
         if (video.paused) {
-          const onPlay = () => {
-            this.$set(this.isPlaying, index, true)
-            this.$set(this.showControls, index, false)
-            this.activeVideoIndex = index // 更新活跃视频索引
-            video.removeEventListener('play', onPlay)
-          }
-
-          video.addEventListener('play', onPlay)
-          video.play().catch(err => {
-            console.error('播放失败:', err)
-            this.$set(this.isPlaying, index, false)
-            this.$set(this.showControls, index, true)
-            this.activeVideoIndex = -1 // 播放失败时重置
-          })
+          await video.play()
+          this.$set(this.videoStates[index], 'isPlaying', true)
+          this.$set(this.videoStates[index], 'showControls', false)
+          this.activeVideoIndex = index
         } else {
-          const onPause = () => {
-            this.$set(this.isPlaying, index, false)
-            this.$set(this.showControls, index, true)
-            this.activeVideoIndex = -1 // 视频暂停时重置
-            video.removeEventListener('pause', onPause)
-          }
-
-          video.addEventListener('pause', onPause)
           video.pause()
+          this.$set(this.videoStates[index], 'isPlaying', false)
+          this.$set(this.videoStates[index], 'showControls', true)
+          this.activeVideoIndex = -1
         }
       } catch (error) {
-        console.error('播放控制失败:', error)
-        this.$set(this.isPlaying, index, false)
-        this.$set(this.showControls, index, true)
-        this.activeVideoIndex = -1
+        console.error('播放失败:', error)
+        // 处理浏览器自动播放限制
+        if (error.name === 'NotAllowedError') {
+          const video = this.$refs.videoPlayer[index]
+          video.muted = true
+          await video.play()
+          this.$set(this.videoStates[index], 'isPlaying', true)
+          this.$set(this.videoStates[index], 'isMuted', true)
+          this.$set(this.videoStates[index], 'showControls', false)
+          this.activeVideoIndex = index
+        }
       }
     },
+    
     toggleMute(index) {
       const video = this.$refs.videoPlayer[index]
       if (!video) return
-
-      try {
-        // 先更新视频状态
-        video.muted = !video.muted
-
-        // 使用 $set 确保响应式更新
-        this.$set(this.isMuted, index, video.muted)
-
-        // 可选：添加音频状态变化的视觉反馈
-        this.$nextTick(() => {
-          console.log(`音频已${video.muted ? '静音' : '取消静音'}`)
-        })
-      } catch (error) {
-        console.error('切换静音失败:', error)
-        // 出错时重置状态
-        this.$set(this.isMuted, index, video.muted)
-      }
+      
+      video.muted = !video.muted
+      this.$set(this.videoStates[index], 'isMuted', video.muted)
     },
+    
     toggleFullscreen(index) {
       const videoContainer = this.$refs.videoPlayer[index].parentElement
       if (videoContainer.requestFullscreen) {
         videoContainer.requestFullscreen()
       }
     },
+    
     updateProgress(index) {
       const video = this.$refs.videoPlayer[index]
-      if (video.duration) {
-        this.progress[index] = (video.currentTime / video.duration) * 100
-        this.currentTime[index] = video.currentTime
+      if (video && video.duration) {
+        this.$set(this.videoStates[index], 'progress', (video.currentTime / video.duration) * 100)
+        this.$set(this.videoStates[index], 'currentTime', video.currentTime)
       }
     },
+    
     setDuration(index) {
       const video = this.$refs.videoPlayer[index]
-      this.duration[index] = video.duration
+      if (video) {
+        this.$set(this.videoStates[index], 'duration', video.duration)
+      }
     },
+    
     seek(event, index) {
       const video = this.$refs.videoPlayer[index]
+      if (!video) return
+      
       const progressBar = event.currentTarget
       const pos = (event.pageX - progressBar.getBoundingClientRect().left) / progressBar.offsetWidth
       video.currentTime = pos * video.duration
     },
+    
     onPlay(index) {
-      this.isPlaying[index] = true
-      this.showControls[index] = false
+      this.$set(this.videoStates[index], 'isPlaying', true)
+      this.$set(this.videoStates[index], 'showControls', false)
+      this.activeVideoIndex = index
     },
+    
     onPause(index) {
-      this.isPlaying[index] = false
-      this.showControls[index] = true
+      this.$set(this.videoStates[index], 'isPlaying', false)
+      this.$set(this.videoStates[index], 'showControls', true)
+      this.activeVideoIndex = -1
     },
+    
     formatTime(seconds) {
       if (isNaN(seconds)) return "0:00"
       const minutes = Math.floor(seconds / 60)
@@ -256,37 +212,7 @@ export default {
 </script>
 
 <style scoped>
-/* 确保这些关键样式存在 */
-.video-container {
-  position: relative;
-  width: 100%;
-  background-color: #000;
-}
-
-.work-image {
-  width: 100%;
-  height: 300px;
-  object-fit: cover;
-  display: block;
-  cursor: pointer;
-}
-
-.custom-controls {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  z-index: 10;
-  opacity: 1;
-  /* 确保不透明 */
-  transition: opacity 0.3s;
-}
-
-/* 其他保持原有样式不变 */
+/* 保持原有的样式不变 */
 .works {
   padding: 40px 20px;
 }
@@ -345,6 +271,33 @@ export default {
   line-height: 1.6;
 }
 
+.video-container {
+  position: relative;
+  width: 100%;
+  background-color: #000;
+}
+
+.work-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+}
+
+.custom-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+  transition: opacity 0.3s;
+}
+
 .custom-controls button {
   background: none;
   border: none;
@@ -401,16 +354,16 @@ export default {
   .works-header {
     margin-bottom: 20px;
   }
-
+  
   .works-header h2 {
     font-size: 24px;
   }
-
+  
   .works-header p {
     font-size: 16px;
     padding: 0 15px;
   }
-
+  
   .work-image {
     height: 200px;
   }

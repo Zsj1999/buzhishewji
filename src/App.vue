@@ -3,7 +3,10 @@
     <el-container>
       <el-header>
         <nav class="nav-menu">
-          <div class="logo">不止设计</div>
+          <div class="logo">
+            不止设计
+            <!-- <img src="./assets/logo1.png" height="80px" width="150px" alt="logo" /> -->
+          </div>
           <el-menu
             :default-active="activeIndex"
             class="el-menu-demo"
@@ -49,9 +52,12 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
 }
-
-.el-header {
+body{
+  margin:0;
   padding: 0;
+}
+.el-header {
+  padding: 0 !important;
   background-color: #545c64;
   color: white;
   position: fixed;
@@ -64,9 +70,9 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding:0px;
   height: 60px;
-  max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -74,6 +80,7 @@ export default {
   font-size: 24px;
   font-weight: bold;
   color: #ffd04b;
+  padding-left: 20px;
 }
 
 .el-menu {
@@ -103,7 +110,7 @@ export default {
   .nav-menu {
     flex-direction: column;
     height: auto;
-    padding: 10px;
+    padding: 0px;
   }
   
   .logo {
